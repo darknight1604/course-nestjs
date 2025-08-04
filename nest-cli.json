@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/day-one/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/day-one/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/day-one",
+  "projects": {
+    "day-one": {
+      "type": "application",
+      "root": "apps/day-one",
+      "entryFile": "main",
+      "sourceRoot": "apps/day-one/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/day-one/tsconfig.app.json"
+      }
+    },
+    "sample-library": {
+      "type": "library",
+      "root": "libs/sample-library",
+      "entryFile": "index",
+      "sourceRoot": "libs/sample-library/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/sample-library/tsconfig.lib.json"
+      }
+    }
+  }
+}
