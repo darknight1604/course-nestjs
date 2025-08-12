@@ -17,9 +17,7 @@
       "sourceRoot": "apps/day-one/src",
       "compilerOptions": {
         "tsConfigPath": "apps/day-one/tsconfig.app.json",
-        "assets": [
-          { "include": "**/*.csv", "outDir": "dist/apps/day-one" }
-        ]
+        "assets": [{ "include": "**/*.csv", "outDir": "dist/apps/day-one" }]
       }
     },
     "sample-library": {
@@ -29,6 +27,15 @@
       "sourceRoot": "libs/sample-library/src",
       "compilerOptions": {
         "tsConfigPath": "libs/sample-library/tsconfig.lib.json"
+      }
+    },
+    "task-management": {
+      "type": "application",
+      "root": "apps/task-management",
+      "entryFile": "main",
+      "sourceRoot": "apps/task-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/task-management/tsconfig.app.json"
       }
     }
   }
