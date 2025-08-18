@@ -27,6 +27,9 @@
       ],
       "sampleLibrary/sample-library/*": [
         "libs/sample-library/src/*"
+      ],
+      "@task-management/*": [
+        "apps/task-management/src/*"
       ]
     }
   }
