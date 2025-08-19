@@ -16,6 +16,7 @@ export class BaseService<T extends ObjectLiteral> {
   async findOne<K extends keyof T>(key: K, value: T[K]): Promise<T | null> {
     return this.repository.findOneBy({ [key]: value } as T);
   }
+
   async update(id: number, data: QueryDeepPartialEntity<T>): Promise<T | null> {
     await this.repository.update(id, data);
     return this.findOne('id' as keyof T, id as T[keyof T]);

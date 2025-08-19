@@ -16,4 +16,7 @@ export class User {
 
   @Column()
   createdDate: Date;
+
+  @Column({ nullable: true })
+  updatedDate: Date;
 }
