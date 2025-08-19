@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TaskManagementController } from './task-management.controller';
-import { TaskManagementService } from './task-management.service';
-import { UsersModule } from './features/authentication/users/users.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UsersModule } from './features/authentication/users/users.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
     }),
   ],
-  controllers: [TaskManagementController],
-  providers: [TaskManagementService],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class TaskManagementModule {}
+export class AppModule {}
