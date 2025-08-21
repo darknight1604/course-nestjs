@@ -23,6 +23,8 @@ Stores team information
 |--------|------|-------------|-------------|
 | id | integer | primary key | Unique identifier |
 | name | integer | | Team name |
+| createdById | integer | not null | Creator reference |
+| createdBy | varchar | | Creator name |
 | createdDate | timestamp | | Record creation date |
 | updatedDate | timestamp | | Record update date |
 
