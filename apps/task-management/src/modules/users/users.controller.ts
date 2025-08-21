@@ -1,10 +1,12 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
   HttpException,
   HttpStatus,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -22,10 +24,15 @@ export class UsersController {
     try {
       await this.usersService.create(createUserDto);
     } catch (error) {
+      if (
+        error instanceof HttpException &&
+        (error.getStatus() as HttpStatus) === HttpStatus.CONFLICT
+      ) {
+        throw new ConflictException(error.message);
+      }
       console.error('Error creating user:', error);
-      throw new HttpException(
-        'Failed to create user',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+      throw new InternalServerErrorException(
+        'An error occurred while creating the user',
       );
     }
   }
