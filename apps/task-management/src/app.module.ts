@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from '@task-management/modules/authentication/auth.module';
+import { UsersModule } from '@task-management/modules/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from '@task-management/modules/users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    UsersModule,
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,6 +23,8 @@ import { UsersModule } from '@task-management/modules/users/users.module';
         autoLoadEntities: true,
       }),
     }),
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
