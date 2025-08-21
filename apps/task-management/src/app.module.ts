@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './features/authentication/users/users.module';
+import { UsersModule } from '@task-management/modules/users/users.module';
 
 @Module({
   imports: [
