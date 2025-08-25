@@ -1,11 +1,13 @@
 # Database Schema Documentation
 
 ## Overview
+
 This document outlines the database schema for a ticket management system with users, teams, sprints, and tickets.
 
 ## Tables
 
 ### Users
+
 Stores user information
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -18,6 +20,7 @@ Stores user information
 | updatedDate | timestamp | | Record update date |
 
 ### Teams
+
 Stores team information
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -29,6 +32,7 @@ Stores team information
 | updatedDate | timestamp | | Record update date |
 
 ### User Teams
+
 Junction table for users and teams (many-to-many)
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -38,19 +42,23 @@ Junction table for users and teams (many-to-many)
 | updatedDate | timestamp | | Record update date |
 
 ### Sessions
+
 Tracks user sessions
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
 | id | integer | primary key | Unique identifier |
 | userId | integer | not null | User reference |
 | accessToken | varchar | | Session token |
+| refreshToken | varchar | | Refresh token |
 | ipAddress | varchar | | Client IP address |
 | userAgent | varchar | | Browser/client info |
 | revoked | bool | | Session status |
 | createdDate | timestamp | | Record creation date |
 | updatedDate | timestamp | | Record update date |
+| expiredAt | timestamp | | Record expire date |
 
 ### Tickets
+
 Stores ticket information
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -68,6 +76,7 @@ Stores ticket information
 | updatedDate | timestamp | | Record update date |
 
 ### Ticket Watchers
+
 Junction table for tickets and watchers (many-to-many)
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -75,6 +84,7 @@ Junction table for tickets and watchers (many-to-many)
 | watcherId | integer | primary key | Watcher reference |
 
 ### Comments
+
 Stores ticket comments
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -87,6 +97,7 @@ Stores ticket comments
 | updatedDate | timestamp | | Record update date |
 
 ### Sprints
+
 Stores sprint information
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -103,14 +114,14 @@ Stores sprint information
 ## Relationships
 
 - teams ← sprints (team_sprints)
-- sprints ← tickets (sprint_tickets)  
+- sprints ← tickets (sprint_tickets)
 - users ← sessions (user_sessions)
 - users ← tickets (user_tickets)
 - tickets ← tickets (ticket_tickets)
 - tickets ← comments (ticket_comments)
 - teams ← tickets (team_tickets)
 - users ↔ teams (user_teams)
-- users ← tickets (user_tickets) 
+- users ← tickets (user_tickets)
 - users ← comments (user_comments)
 - users ← sprints (user_sprints)
 - users ↔ tickets (ticket_watchers)
