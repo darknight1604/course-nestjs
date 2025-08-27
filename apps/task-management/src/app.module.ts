@@ -7,6 +7,7 @@ import { UsersModule } from '@task-management/modules/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TeamsModule } from './modules/teams/teams.module';
+import { SessionsModule } from './modules/sessions/sessions.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TeamsModule } from './modules/teams/teams.module';
     UsersModule,
     AuthModule,
     TeamsModule,
+    SessionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
