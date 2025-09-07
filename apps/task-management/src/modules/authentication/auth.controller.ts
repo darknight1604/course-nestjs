@@ -17,7 +17,9 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { LoginResponse } from './types/login-response';
 import { LoginAccessTokenPayload } from './types/login-token-payload';
-import { STRING_KEYS } from '@task-management/constants';
+import { STRING_KEYS, UserRole } from '@task-management/constants';
+import { RolesGuard } from './roles.guard';
+import { Roles } from './decorators/roles.decorator';
 
 @Controller('auth')
 export class AuthController implements CanHealthCheck {
@@ -56,5 +58,12 @@ export class AuthController implements CanHealthCheck {
   @Post('logout')
   logout(@Request() req: { user: LoginAccessTokenPayload }): Promise<void> {
     return this.authService.logout(parseInt(req.user.sub, 10));
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles([UserRole.ADMIN])
+  @Get('admin-check')
+  adminHealthCheck(): string {
+    return 'Admin role is working!';
   }
 }

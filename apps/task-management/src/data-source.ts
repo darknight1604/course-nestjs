@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { CreateSession1757163872579 } from './migrations/1757163872579-CreateSession';
 import { CreateTeam1757169841968 } from './migrations/1757169841968-CreateTeam';
+import { AddColumnRolesToUser1757248493590 } from './migrations/1757248493590-AddColumnRolesToUser';
 
 dotenv.config({ path: 'apps/task-management/.development.env' });
 
@@ -16,7 +17,11 @@ export const dataSource = new DataSource({
   entities: [
     /*...*/
   ],
-  migrations: [CreateSession1757163872579, CreateTeam1757169841968],
+  migrations: [
+    CreateSession1757163872579,
+    CreateTeam1757169841968,
+    AddColumnRolesToUser1757248493590,
+  ],
   logging: true,
   synchronize: false,
 });

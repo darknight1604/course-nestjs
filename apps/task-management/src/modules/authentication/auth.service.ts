@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { SessionsService } from '@task-management/modules/sessions/sessions.service';
 import { getStringValue } from '@task-management/core/utils/string-utils';
 import dayjs from '@task-management/core/config/dayjs.config';
+import { LoginAccessTokenPayload } from './types/login-token-payload';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +29,11 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Invalid username or password');
     }
-    const payload = { sub: user.id, username: user.username };
+    const payload: LoginAccessTokenPayload = {
+      sub: user.id + '',
+      username: user.username,
+      roles: user.roles,
+    };
     const accessTokenExpireDuration = getStringValue(
       this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION'),
     );

@@ -1,3 +1,4 @@
+import { UserRole } from '@task-management/constants';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -19,4 +20,12 @@ export class User {
 
   @Column({ nullable: true })
   updatedDate: Date;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    array: true,
+    default: [UserRole.USER],
+  })
+  roles: UserRole[];
 }
