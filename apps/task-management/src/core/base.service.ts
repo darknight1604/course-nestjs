@@ -1,4 +1,4 @@
-import { ObjectLiteral, Repository } from 'typeorm';
+import { FindManyOptions, ObjectLiteral, Repository } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -24,5 +24,9 @@ export class BaseService<T extends ObjectLiteral> {
 
   async remove(id: number): Promise<void> {
     await this.repository.delete(id);
+  }
+
+  async find(options?: FindManyOptions<T>): Promise<T[]> {
+    return this.repository.find(options);
   }
 }

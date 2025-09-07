@@ -22,7 +22,7 @@ import { SessionsModule } from './modules/sessions/sessions.module';
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_DATABASE'),
-        synchronize: true,
+        synchronize: config.get<boolean>('DB_SYNCHRONIZE') || false,
         autoLoadEntities: true,
       }),
     }),

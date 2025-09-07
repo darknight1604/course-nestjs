@@ -1,16 +1,22 @@
 import { DataSource } from 'typeorm';
 import { CreateSession1757163872579 } from './migrations/1757163872579-CreateSession';
+import { CreateTeam1757169841968 } from './migrations/1757169841968-CreateTeam';
+import 'reflect-metadata';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: 'apps/task-management/.development.env' });
 
 export const dataSource = new DataSource({
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'postgres',
-  database: 'pg-task-management',
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   entities: [
     /*...*/
   ],
-  migrations: [CreateSession1757163872579],
+  migrations: [CreateSession1757163872579, CreateTeam1757169841968],
   logging: true,
+  synchronize: false,
 });

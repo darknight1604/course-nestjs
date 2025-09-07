@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { SessionsService } from '@task-management/modules/sessions/sessions.service';
 import { getStringValue } from '@task-management/core/utils/string-utils';
+import dayjs from '@task-management/core/config/dayjs.config';
 
 @Injectable()
 export class AuthService {
@@ -42,7 +43,7 @@ export class AuthService {
         this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION') || '7d',
     });
 
-    const now = new Date();
+    const now = dayjs().utc();
     await this.sessionsService.create({
       userId: user.id,
       refreshToken,
@@ -52,14 +53,18 @@ export class AuthService {
       userAgent: loginDto.userAgent,
       createdDate: now,
       updatedDate: now,
-      expiredAt: now.setMinutes(
-        now.getMinutes() + parseInt(accessTokenExpireDuration, 10),
-      ),
+      expiredAt: now.add(parseInt(accessTokenExpireDuration, 10), 'seconds'),
     });
 
+    // On login → save session in both DB and Redis.
+    // TODO: Save session in Redis
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
     };
+  }
+
+  async logout(userId: number): Promise<void> {
+    await this.sessionsService.revokeAll(userId);
   }
 }

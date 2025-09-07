@@ -4,18 +4,20 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Post,
-  UseGuards,
-  Request,
   Ip,
+  Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
-import { LoginDto } from './dtos/login.dto';
-import { AuthService } from './auth.service';
-import { LoginResponse } from './types/login-response';
 import { CanHealthCheck } from '@task-management/core/can-health-check';
-import { AuthGuard } from './auth.guard';
 import { getStringValue } from '@task-management/core/utils/string-utils';
 import { IncomingHttpHeaders } from 'http';
+import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dtos/login.dto';
+import { LoginResponse } from './types/login-response';
+import { LoginAccessTokenPayload } from './types/login-token-payload';
+import { STRING_KEYS } from '@task-management/constants';
 
 @Controller('auth')
 export class AuthController implements CanHealthCheck {
@@ -33,21 +35,26 @@ export class AuthController implements CanHealthCheck {
     @Ip() ipAddress: string,
     @Request() req: { headers: IncomingHttpHeaders },
   ): Promise<LoginResponse> {
-    console.log('login is called');
-    console.log('ipAddress: ', ipAddress);
-    console.log('req: ', req, '- userAgent: ', req.headers['user-agent']);
-
     const loginDto: LoginDto = {
       ...body,
       ipAddress: getStringValue(ipAddress),
-      userAgent: getStringValue(req.headers['user-agent']),
+      userAgent: getStringValue(req.headers[STRING_KEYS.USER_AGENT]),
     };
     return await this.authService.login(loginDto);
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req: { user: any }): Record<string, any> {
-    return (req.user || {}) as Record<string, any>;
+  getProfile(
+    @Request() req: { user: LoginAccessTokenPayload },
+  ): Record<string, any> {
+    return req.user;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @Post('logout')
+  logout(@Request() req: { user: LoginAccessTokenPayload }): Promise<void> {
+    return this.authService.logout(parseInt(req.user.sub, 10));
   }
 }

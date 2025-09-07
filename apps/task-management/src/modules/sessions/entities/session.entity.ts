@@ -1,6 +1,7 @@
 import { User } from '@task-management/modules/users/entities/user.entity';
-import { Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Session {
   @PrimaryGeneratedColumn()
   id: number;
