@@ -1,8 +1,8 @@
+import * as dotenv from 'dotenv';
+import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { CreateSession1757163872579 } from './migrations/1757163872579-CreateSession';
 import { CreateTeam1757169841968 } from './migrations/1757169841968-CreateTeam';
-import 'reflect-metadata';
-import * as dotenv from 'dotenv';
 
 dotenv.config({ path: 'apps/task-management/.development.env' });
 

@@ -8,23 +8,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TeamsModule } from './modules/teams/teams.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
+import configuration from '@task-management/core/config/configuration';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: config.get<number>('DB_PORT'),
-        username: config.get<string>('DB_USERNAME'),
-        password: config.get<string>('DB_PASSWORD'),
-        database: config.get<string>('DB_DATABASE'),
-        synchronize: config.get<boolean>('DB_SYNCHRONIZE') || false,
-        autoLoadEntities: true,
-      }),
+      useFactory: () => configuration().database,
     }),
     UsersModule,
     AuthModule,
