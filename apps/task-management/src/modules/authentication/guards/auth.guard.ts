@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { LoginAccessTokenPayload } from './types/login-token-payload';
+import { LoginAccessTokenPayload } from '../types/login-token-payload';
 import { Request } from 'express';
-import { SessionsService } from '../sessions/sessions.service';
+import { SessionsService } from '@task-management/modules/sessions/sessions.service';
 import { STRING_KEYS } from '@task-management/constants';
 
 @Injectable()

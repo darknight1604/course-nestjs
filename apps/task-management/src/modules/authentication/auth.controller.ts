@@ -12,14 +12,14 @@ import {
 import { CanHealthCheck } from '@task-management/core/can-health-check';
 import { getStringValue } from '@task-management/core/utils/string-utils';
 import { IncomingHttpHeaders } from 'http';
-import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { LoginResponse } from './types/login-response';
 import { LoginAccessTokenPayload } from './types/login-token-payload';
 import { STRING_KEYS, UserRole } from '@task-management/constants';
-import { RolesGuard } from './roles.guard';
 import { Roles } from './decorators/roles.decorator';
+import { AuthGuard } from './guards/auth.guard';
+import { RolesGuard } from './guards/roles.guard';
 
 @Controller('auth')
 export class AuthController implements CanHealthCheck {
