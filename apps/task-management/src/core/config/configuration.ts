@@ -1,3 +1,4 @@
+import { JwtModuleOptions } from '@nestjs/jwt';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
@@ -15,4 +16,9 @@ export default () => ({
     synchronize: process.env.DB_SYNCHRONIZE === 'true',
     autoLoadEntities: true,
   } as TypeOrmModuleOptions,
+  jwt: {
+    global: true,
+    secret: process.env.JWT_SECRET,
+    signOptions: { expiresIn: process.env.JWT_EXPIRATION },
+  } as JwtModuleOptions,
 });
