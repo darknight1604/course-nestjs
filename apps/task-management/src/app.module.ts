@@ -10,6 +10,7 @@ import { TeamsModule } from './modules/teams/teams.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { CommentsModule } from './modules/comments/comments.module';
+import { SprintsModule } from './modules/sprints/sprints.module';
 import configuration from '@task-management/core/config/configuration';
 
 @Module({
@@ -26,6 +27,7 @@ import configuration from '@task-management/core/config/configuration';
     SessionsModule,
     TicketsModule,
     CommentsModule,
+    SprintsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
