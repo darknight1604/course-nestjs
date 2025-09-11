@@ -26,8 +26,8 @@ export class TicketsController {
   }
 
   @Get()
-  findAll(@Query() searchTicketDto: SearchTicketDto) {
-    return this.ticketsService.search(searchTicketDto);
+  findAll(@Query() query: SearchTicketDto) {
+    return this.ticketsService.search(query);
   }
 
   @Get(':id')

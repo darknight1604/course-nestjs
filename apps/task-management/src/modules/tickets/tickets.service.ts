@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from '@task-management/core/base.service';
-import { Ticket } from './entities/ticket.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { BaseService } from '@task-management/core/base.service';
 import { PaginationResult } from '@task-management/core/types';
+import { buildOrderOptions } from '@task-management/core/utils/pagination-utils';
+import { Repository } from 'typeorm';
 import { SearchTicketDto } from './dto/search-ticket.dto';
-import { isNonEmptyString } from '@task-management/core/utils/string-utils';
+import { Ticket } from './entities/ticket.entity';
 
 @Injectable()
 export class TicketsService extends BaseService<Ticket> {
@@ -16,9 +16,7 @@ export class TicketsService extends BaseService<Ticket> {
     super(ticketRepo);
   }
 
-  async search(
-    searchTicketDto: SearchTicketDto,
-  ): Promise<PaginationResult<Ticket>> {
+  async search(query: SearchTicketDto): Promise<PaginationResult<Ticket>> {
     const {
       title,
       status,
@@ -29,10 +27,12 @@ export class TicketsService extends BaseService<Ticket> {
       orderBy,
       orderDir,
       ...paginationOptions
-    } = searchTicketDto;
+    } = query;
+    const orderOptions = buildOrderOptions({ orderBy, orderDir });
+
     return await this.paginate({
       ...paginationOptions,
-      order: isNonEmptyString(orderBy) ? { [orderBy!]: orderDir } : {},
+      order: orderOptions,
       where: {
         ...(title && { title }),
         ...(status && { status }),
