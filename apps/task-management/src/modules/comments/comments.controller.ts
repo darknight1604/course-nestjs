@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { AuthGuard } from '@task-management/modules/authentication/guards/auth.guard';
+import { SearchCommentDto } from './dto/search-comment.dto';
 
 @Controller('comments')
 @UseGuards(AuthGuard)
@@ -24,8 +26,8 @@ export class CommentsController {
   }
 
   @Get()
-  findAll() {
-    return this.commentsService.findAll();
+  findAll(@Query() query: SearchCommentDto) {
+    return this.commentsService.search(query);
   }
 
   @Get(':id')
