@@ -7,3 +7,11 @@ export function getStringValue(value: any): string {
   }
   return '';
 }
+
+export function isNonEmptyString(value: any): boolean {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+export function isEmptyString(value: any): boolean {
+  return !isNonEmptyString(value);
+}
