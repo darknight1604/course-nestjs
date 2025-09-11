@@ -1,12 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from './entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { BaseService } from '@task-management/core/base.service';
-import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from '@task-management/core/base.service';
+import { PaginationResult } from '@task-management/core/types';
+import { buildOrderOptions } from '@task-management/core/utils/pagination-utils';
+import * as bcrypt from 'bcrypt';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { SearchUserDto } from './dto/search-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -49,6 +52,22 @@ export class UsersService extends BaseService<User> {
     return await super.update(id, {
       ...updateUserDto,
       updatedDate: new Date(),
+    });
+  }
+
+  async search(query: SearchUserDto): Promise<PaginationResult<User>> {
+    const { username, isActive, role, orderBy, orderDir, ...rest } = query;
+    const orderOptions = buildOrderOptions({ orderBy, orderDir });
+
+    const where: FindOptionsWhere<User> = {};
+    if (username !== undefined) where.username = username;
+    if (isActive !== undefined) where.isActive = isActive;
+    if (role !== undefined) where.roles = `{${role}}`;
+
+    return await this.paginate({
+      ...rest,
+      order: orderOptions,
+      where: Object.keys(where).length > 0 ? where : undefined,
     });
   }
 }

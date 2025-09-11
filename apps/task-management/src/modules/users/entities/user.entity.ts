@@ -27,5 +27,5 @@ export class User {
     array: true,
     default: [UserRole.USER],
   })
-  roles: UserRole[];
+  roles: string[];
 }

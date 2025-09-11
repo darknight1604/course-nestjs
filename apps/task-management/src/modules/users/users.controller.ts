@@ -10,12 +10,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@task-management/modules/authentication/guards/auth.guard';
+import { SearchUserDto } from './dto/search-user.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -41,8 +43,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() query: SearchUserDto) {
+    return this.usersService.search(query);
   }
 
   @Get(':id')
