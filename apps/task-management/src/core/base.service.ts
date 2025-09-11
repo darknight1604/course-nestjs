@@ -1,3 +1,7 @@
+import {
+  PaginationOptions,
+  PaginationResult,
+} from '@task-management/core/types';
 import { FindManyOptions, ObjectLiteral, Repository } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
@@ -28,5 +32,24 @@ export class BaseService<T extends ObjectLiteral> {
 
   async find(options?: FindManyOptions<T>): Promise<T[]> {
     return this.repository.find(options);
+  }
+
+  async paginate(options: PaginationOptions<T>): Promise<PaginationResult<T>> {
+    const { page = 1, limit = 10, where, order } = options;
+
+    const [data, total] = await this.repository.findAndCount({
+      where,
+      order,
+      skip: (page - 1) * limit,
+      take: limit,
+    } as FindManyOptions<T>);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 }

@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { AuthGuard } from '@task-management/modules/authentication/guards/auth.guard';
+import { SearchTicketDto } from './dto/search-ticket.dto';
 
 @Controller('tickets')
 @UseGuards(AuthGuard)
@@ -24,8 +26,8 @@ export class TicketsController {
   }
 
   @Get()
-  findAll() {
-    return this.ticketsService.findAll();
+  findAll(@Query() searchTicketDto: SearchTicketDto) {
+    return this.ticketsService.search(searchTicketDto);
   }
 
   @Get(':id')
