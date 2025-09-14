@@ -9,17 +9,17 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { STRING_KEYS, UserRole } from '@task-management/constants';
 import { CanHealthCheck } from '@task-management/core/can-health-check';
 import { getStringValue } from '@task-management/core/utils/string-utils';
 import { IncomingHttpHeaders } from 'http';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dtos/login.dto';
-import { LoginResponse } from './types/login-response';
-import { LoginAccessTokenPayload } from './types/login-token-payload';
-import { STRING_KEYS, UserRole } from '@task-management/constants';
 import { Roles } from './decorators/roles.decorator';
+import { LoginDto } from './dtos/login.dto';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { LoginResponse } from './types/login-response';
+import { LoginAccessTokenPayload } from './types/login-token-payload';
 
 @Controller('auth')
 export class AuthController implements CanHealthCheck {

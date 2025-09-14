@@ -71,7 +71,12 @@ export class UsersService extends BaseService<User> {
     });
   }
 
-  getUserById(id: string): Promise<User | null> {
-    return this.findOne('id', +id);
+  async getUserById(id: string): Promise<Omit<User, 'password'> | null> {
+    const user = await this.findOne('id', +id);
+    if (!user) return null;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }
