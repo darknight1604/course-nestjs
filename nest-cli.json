@@ -17,7 +17,21 @@
       "sourceRoot": "apps/day-one/src",
       "compilerOptions": {
         "tsConfigPath": "apps/day-one/tsconfig.app.json",
-        "assets": [{ "include": "**/*.csv", "outDir": "dist/apps/day-one" }]
+        "assets": [
+          {
+            "include": "**/*.csv",
+            "outDir": "dist/apps/day-one"
+          }
+        ]
+      }
+    },
+    "queue": {
+      "type": "library",
+      "root": "libs/queue",
+      "entryFile": "index",
+      "sourceRoot": "libs/queue/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/queue/tsconfig.lib.json"
       }
     },
     "sample-library": {

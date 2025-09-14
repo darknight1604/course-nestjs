@@ -22,14 +22,20 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@task-management/*": [
+        "apps/task-management/src/*"
+      ],
+      "@foundation/queue": [
+        "libs/queue/src"
+      ],
+      "@foundation/queue/*": [
+        "libs/queue/src/*"
+      ],
       "sampleLibrary/sample-library": [
         "libs/sample-library/src"
       ],
       "sampleLibrary/sample-library/*": [
         "libs/sample-library/src/*"
-      ],
-      "@task-management/*": [
-        "apps/task-management/src/*"
       ]
     }
   }
