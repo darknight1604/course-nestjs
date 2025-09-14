@@ -13,6 +13,7 @@ import { CommentsModule } from './modules/comments/comments.module';
 import { SprintsModule } from './modules/sprints/sprints.module';
 import configuration from '@task-management/core/config/configuration';
 import { QueueModule } from '@foundation/queue';
+import { AuthorizationModule } from './modules/authorization/authorization.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { QueueModule } from '@foundation/queue';
     CommentsModule,
     SprintsModule,
     QueueModule,
+    AuthorizationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
