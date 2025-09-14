@@ -70,4 +70,8 @@ export class UsersService extends BaseService<User> {
       where: Object.keys(where).length > 0 ? where : undefined,
     });
   }
+
+  getUserById(id: string): Promise<User | null> {
+    return this.findOne('id', +id);
+  }
 }

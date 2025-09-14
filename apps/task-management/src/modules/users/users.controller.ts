@@ -19,9 +19,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SearchUserDto } from './dto/search-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import { UserRole } from '@task-management/constants';
+import { Roles } from '@task-management/modules/authentication/decorators/roles.decorator';
+import { RolesGuard } from '@task-management/modules/authentication/guards/roles.guard';
 
 @Controller('users')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
+@Roles([UserRole.ADMIN, UserRole.SUPER_ADMIN])
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
   constructor(private readonly usersService: UsersService) {}
@@ -51,7 +55,7 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const user = await this.usersService.findOne('id', +id);
+    const user = await this.usersService.getUserById(id);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }

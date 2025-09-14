@@ -4,9 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-// import { AuthSharedModule } from '@task-management/modules/authentication/auth-shared.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { SessionsModule } from '@task-management/modules/sessions/sessions.module';
+import { AuthorizationModule } from '@task-management/modules/authorization/authorization.module';
+import { UsersAdminController } from './users.admin.controller';
+import { UsersSuperAdminController } from './users.super-admin.controller';
 
 @Module({
   imports: [
@@ -24,8 +26,13 @@ import { SessionsModule } from '@task-management/modules/sessions/sessions.modul
         return secret;
       },
     }),
+    AuthorizationModule,
   ],
-  controllers: [UsersController],
+  controllers: [
+    UsersController,
+    UsersAdminController,
+    UsersSuperAdminController,
+  ],
   providers: [UsersService],
   exports: [UsersService],
 })
