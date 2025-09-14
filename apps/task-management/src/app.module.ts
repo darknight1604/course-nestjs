@@ -12,6 +12,7 @@ import { TicketsModule } from './modules/tickets/tickets.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { SprintsModule } from './modules/sprints/sprints.module';
 import configuration from '@task-management/core/config/configuration';
+import { QueueModule } from '@foundation/queue';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import configuration from '@task-management/core/config/configuration';
     TicketsModule,
     CommentsModule,
     SprintsModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],

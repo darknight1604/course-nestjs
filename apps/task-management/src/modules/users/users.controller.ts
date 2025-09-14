@@ -7,21 +7,23 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  Logger,
   Param,
   Patch,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@task-management/modules/authentication/guards/auth.guard';
+import { CreateUserDto } from './dto/create-user.dto';
 import { SearchUserDto } from './dto/search-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
@@ -35,7 +37,7 @@ export class UsersController {
       ) {
         throw new ConflictException(error.message);
       }
-      console.error('Error creating user:', error);
+      this.logger.error('Error creating user:', error);
       throw new InternalServerErrorException(
         'An error occurred while creating the user',
       );
