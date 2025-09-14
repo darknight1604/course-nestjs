@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { TicketsController } from './tickets.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -6,6 +6,9 @@ import { Ticket } from './entities/ticket.entity';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SessionsModule } from '@task-management/modules/sessions/sessions.module';
+import { QueueModule } from '@foundation/queue';
+import { RabbitMQClient } from '@foundation/queue/rabbitmq-client';
+import { CreateTicketDto } from './dto/create-ticket.dto';
 
 @Module({
   imports: [
@@ -22,8 +25,24 @@ import { SessionsModule } from '@task-management/modules/sessions/sessions.modul
       },
     }),
     SessionsModule,
+    QueueModule,
   ],
   controllers: [TicketsController],
   providers: [TicketsService],
 })
-export class TicketsModule {}
+export class TicketsModule implements OnModuleInit {
+  private readonly logger = new Logger(TicketsModule.name);
+  constructor(
+    private readonly ticketsService: TicketsService,
+    private readonly rabbitMQClient: RabbitMQClient,
+  ) {}
+
+  onModuleInit() {
+    this.rabbitMQClient.createConsumer('tickets_queue', async (message) => {
+      await this.ticketsService.create(
+        JSON.parse(message.content.toString() as string) as CreateTicketDto,
+      );
+      this.logger.log('Ticket created from queue message');
+    });
+  }
+}
