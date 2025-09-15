@@ -84,7 +84,7 @@ export class TicketsController {
         teamId: record.TeamId ? Number(record.TeamId) : undefined,
         sprintId: record.SprintId ? Number(record.SprintId) : undefined,
       };
-      publisher.send(Buffer.from(JSON.stringify(message)));
+      void publisher.send(Buffer.from(JSON.stringify(message)));
     }
   }
 }

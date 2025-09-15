@@ -38,11 +38,14 @@ export class TicketsModule implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.rabbitMQClient.createConsumer('tickets_queue', async (message) => {
-      await this.ticketsService.create(
-        JSON.parse(message.content.toString() as string) as CreateTicketDto,
-      );
-      this.logger.log('Ticket created from queue message');
-    });
+    void this.rabbitMQClient.createConsumer(
+      'tickets_queue',
+      async (message) => {
+        await this.ticketsService.create(
+          JSON.parse(message.content.toString()) as CreateTicketDto,
+        );
+        this.logger.log('Ticket created from queue message');
+      },
+    );
   }
 }
