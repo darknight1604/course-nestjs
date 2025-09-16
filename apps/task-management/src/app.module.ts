@@ -14,6 +14,7 @@ import { SprintsModule } from './modules/sprints/sprints.module';
 import configuration from '@task-management/core/config/configuration';
 import { QueueModule } from '@foundation/queue';
 import { AuthorizationModule } from './modules/authorization/authorization.module';
+import { CachingDatabaseModule } from '@foundation/caching-database';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
     SprintsModule,
     QueueModule,
     AuthorizationModule,
+    CachingDatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

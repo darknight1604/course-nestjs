@@ -39,6 +39,7 @@
     "dayjs": "^1.11.18",
     "pg": "^8.16.3",
     "rabbitmq-stream-js-client": "^0.6.2",
+    "redis": "^4.7.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.25"
@@ -95,6 +96,7 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
+      "^foundation/caching-database(|/.*)$": "<rootDir>/libs/caching-database/src/$1",
       "^foundation/queue(|/.*)$": "<rootDir>/libs/queue/src/$1",
       "^sampleLibrary/sample-library(|/.*)$": "<rootDir>/libs/sample-library/src/$1"
     }

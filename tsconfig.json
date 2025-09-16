@@ -22,14 +22,20 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@task-management/*": [
-        "apps/task-management/src/*"
-      ],
       "@foundation/queue": [
         "libs/queue/src"
       ],
       "@foundation/queue/*": [
         "libs/queue/src/*"
+      ],
+      "@task-management/*": [
+        "apps/task-management/src/*"
+      ],
+      "@foundation/caching-database": [
+        "libs/caching-database/src"
+      ],
+      "@foundation/caching-database/*": [
+        "libs/caching-database/src/*"
       ],
       "sampleLibrary/sample-library": [
         "libs/sample-library/src"

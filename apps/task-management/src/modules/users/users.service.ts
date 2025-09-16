@@ -10,12 +10,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SearchUserDto } from './dto/search-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { CachingDatabaseService } from '@foundation/caching-database';
+import { UserWithoutPassword } from './types';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     private readonly configService: ConfigService,
+    private readonly cachingDatabase: CachingDatabaseService,
   ) {
     super(userRepo);
   }
@@ -71,12 +74,23 @@ export class UsersService extends BaseService<User> {
     });
   }
 
-  async getUserById(id: string): Promise<Omit<User, 'password'> | null> {
+  async getUserById(id: string): Promise<UserWithoutPassword | null> {
+    const cacheUser = await this.cachingDatabase.get<UserWithoutPassword>(
+      'user_' + id,
+    );
+    if (cacheUser !== null) {
+      return cacheUser as UserWithoutPassword;
+    }
+
     const user = await this.findOne('id', +id);
     if (!user) return null;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
+    await this.cachingDatabase.set<UserWithoutPassword>(
+      'user_' + id,
+      userWithoutPassword,
+    );
     return userWithoutPassword;
   }
 }
