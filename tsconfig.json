@@ -42,6 +42,9 @@
       ],
       "sampleLibrary/sample-library/*": [
         "libs/sample-library/src/*"
+      ],
+      "@notification-app/*": [
+        "apps/notification/src/*"
       ]
     }
   }
