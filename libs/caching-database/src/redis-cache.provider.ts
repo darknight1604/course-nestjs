@@ -28,13 +28,21 @@ export class RedisCacheProvider
     });
   }
   async onModuleDestroy() {
-    await this.client.quit();
-    this.logger.log('Disconnecting Redis...');
+    try {
+      await this.client.quit();
+      this.logger.log('Disconnecting Redis...');
+    } catch (error) {
+      this.logger.error('Error during Redis disconnection', error);
+    }
   }
   async onModuleInit() {
     this.logger.log('Connecting to Redis...');
-    await this.client.connect();
-    this.logger.log('Redis connected ✅');
+    try {
+      await this.client.connect();
+      this.logger.log('Redis connected ✅');
+    } catch (error) {
+      this.logger.error('Redis connection failed ❌', error);
+    }
   }
 
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
