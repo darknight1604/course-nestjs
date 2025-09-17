@@ -2,7 +2,7 @@ import { JwtModuleOptions } from '@nestjs/jwt';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
-dotenv.config({ path: 'apps/task-management/.development.env' });
+dotenv.config({ path: './.development.env' });
 
 export default () => ({
   port: parseInt(process.env.PORT || '3000', 10),
