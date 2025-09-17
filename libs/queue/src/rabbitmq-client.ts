@@ -47,7 +47,7 @@ export class RabbitMQClient {
       arguments: this.createStreamAguments,
     });
     const consumer = await this.client.declareConsumer(
-      { stream: streamName, offset: rabbit.Offset.first() },
+      { stream: streamName, offset: rabbit.Offset.next() },
       handle,
     );
     this.logger.log(`Consumer created for stream: ${streamName}`);
