@@ -79,7 +79,7 @@ export class UsersService extends BaseService<User> {
       'user_' + id,
     );
     if (cacheUser !== null) {
-      return cacheUser as UserWithoutPassword;
+      return cacheUser;
     }
 
     const user = await this.findOne('id', +id);
