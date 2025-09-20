@@ -43,9 +43,14 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload, {
       expiresIn: accessTokenExpireDuration + accessTokenExpireUnit || '5m',
     });
+    const refreshTokenExpireDuration = getStringValue(
+      this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION'),
+    );
+    const refreshTokenExpireUnit = getStringValue(
+      this.configService.get<string>('JWT_REFRESH_TOKEN_UNIT'),
+    );
     const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn:
-        this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION') || '7d',
+      expiresIn: refreshTokenExpireDuration + refreshTokenExpireUnit || '7d',
     });
 
     const now = dayjs().utc();
@@ -64,8 +69,9 @@ export class AuthService {
     // On login → save session in both DB and Redis.
     // TODO: Save session in Redis
     return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      username: user.username,
     };
   }
 

@@ -7,6 +7,7 @@ import {
   Ip,
   Post,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { STRING_KEYS, UserRole } from '@task-management/constants';
@@ -18,12 +19,17 @@ import { Roles } from './decorators/roles.decorator';
 import { LoginDto } from './dtos/login.dto';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
-import { LoginResponse } from './types/login-response';
 import { LoginAccessTokenPayload } from './types/login-token-payload';
+import type { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { LoginResponse } from './types/login-response';
 
 @Controller('auth')
 export class AuthController implements CanHealthCheck {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get()
   healthCheck(): string {
@@ -36,13 +42,25 @@ export class AuthController implements CanHealthCheck {
     @Body() body: LoginDto,
     @Ip() ipAddress: string,
     @Request() req: { headers: IncomingHttpHeaders },
-  ): Promise<LoginResponse> {
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<Omit<LoginResponse, 'refreshToken'>> {
     const loginDto: LoginDto = {
       ...body,
       ipAddress: getStringValue(ipAddress),
       userAgent: getStringValue(req.headers[STRING_KEYS.USER_AGENT]),
     };
-    return await this.authService.login(loginDto);
+    const { refreshToken, ...rest } = await this.authService.login(loginDto);
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge:
+        1000 *
+        (this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION') ||
+          604800), // 7 days
+    });
+
+    return rest;
   }
 
   @UseGuards(AuthGuard)
@@ -56,7 +74,11 @@ export class AuthController implements CanHealthCheck {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Post('logout')
-  logout(@Request() req: { user: LoginAccessTokenPayload }): Promise<void> {
+  logout(
+    @Request() req: { user: LoginAccessTokenPayload },
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    res.clearCookie('access_token');
     return this.authService.logout(parseInt(req.user.sub, 10));
   }
 
