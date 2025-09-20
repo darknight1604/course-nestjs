@@ -45,4 +45,15 @@ export class SessionsService extends BaseService<Session> {
 
     return true;
   }
+
+  async revokeSession(sessionId: number): Promise<void> {
+    return await this.sessionRepo
+      .createQueryBuilder()
+      .update(Session)
+      .set({ revoked: true })
+      .where('id = :id', { id: sessionId })
+      .andWhere('revoked = :revoked', { revoked: false })
+      .execute()
+      .then(() => undefined);
+  }
 }

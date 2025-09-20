@@ -52,7 +52,7 @@ export class AuthController implements CanHealthCheck {
     const { refreshToken, ...rest } = await this.authService.login(loginDto);
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: false,
+      secure: this.configService.get<string>('ENV') === 'production',
       sameSite: 'strict',
       maxAge:
         1000 *
@@ -87,5 +87,30 @@ export class AuthController implements CanHealthCheck {
   @Get('admin-check')
   adminHealthCheck(): string {
     return 'Admin role is working!';
+  }
+
+  @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(
+    @Request() req: { headers: IncomingHttpHeaders; cookies: any },
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<Omit<LoginResponse, 'refreshToken'>> {
+    const refreshToken: string | undefined = req.cookies['refreshToken'];
+    if (!refreshToken) {
+      throw new Error('No refresh token provided');
+    }
+
+    const { refreshToken: newRefreshToken, ...rest } =
+      await this.authService.refreshToken(refreshToken);
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: this.configService.get<string>('ENV') === 'production',
+      sameSite: 'strict',
+      maxAge:
+        1000 *
+        (this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION') ||
+          604800), // 7 days
+    });
+    return rest;
   }
 }
