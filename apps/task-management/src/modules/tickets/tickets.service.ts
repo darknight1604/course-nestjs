@@ -27,8 +27,8 @@ export class TicketsService extends BaseService<Ticket> {
       createdById,
       teamId,
       sprintId,
-      orderBy,
-      orderDir,
+      orderBy = 'updatedDate',
+      orderDir = 'DESC',
       startDate,
       endDate,
       ...paginationOptions
