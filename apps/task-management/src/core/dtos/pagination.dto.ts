@@ -1,6 +1,6 @@
 // pagination.dto.ts
-import { Type, Transform } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Min, IsIn } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsIn, IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class PaginationDto {
   @IsOptional()
@@ -26,4 +26,12 @@ export class PaginationDto {
   )
   @IsIn(['ASC', 'DESC'])
   orderDir?: 'ASC' | 'DESC'; // e.g. "DESC"
+
+  @IsOptional()
+  @Type(() => Date)
+  startDate?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  endDate?: Date;
 }

@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from '@task-management/core/base.service';
 import { PaginationResult } from '@task-management/core/types';
-import { buildOrderOptions } from '@task-management/core/utils/pagination-utils';
-import { Repository } from 'typeorm';
+import {
+  buildDateRange,
+  buildOrderOptions,
+} from '@task-management/core/utils/pagination-utils';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { SearchTicketDto } from './dto/search-ticket.dto';
 import { Ticket } from './entities/ticket.entity';
 
@@ -26,21 +29,27 @@ export class TicketsService extends BaseService<Ticket> {
       sprintId,
       orderBy,
       orderDir,
+      startDate,
+      endDate,
       ...paginationOptions
     } = query;
     const orderOptions = buildOrderOptions({ orderBy, orderDir });
+    const whereCondition:
+      | FindOptionsWhere<Ticket>
+      | FindOptionsWhere<Ticket>[] = {
+      ...(title && { title: Like(`%${title}%`) }),
+      ...(status && { status }),
+      ...(assigneeId && { assigneeId }),
+      ...(createdById && { createdById }),
+      ...(teamId && { teamId }),
+      ...(sprintId && { sprintId }),
+      ...buildDateRange(startDate, endDate),
+    };
 
     return await this.paginate({
       ...paginationOptions,
       order: orderOptions,
-      where: {
-        ...(title && { title }),
-        ...(status && { status }),
-        ...(assigneeId && { assigneeId }),
-        ...(createdById && { createdById }),
-        ...(teamId && { teamId }),
-        ...(sprintId && { sprintId }),
-      },
+      where: whereCondition,
     });
   }
 }
