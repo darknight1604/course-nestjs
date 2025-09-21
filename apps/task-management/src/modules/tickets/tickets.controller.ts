@@ -12,6 +12,7 @@ import {
   UploadedFile,
   HttpException,
   HttpStatus,
+  Request,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
@@ -22,6 +23,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { parse } from 'csv-parse/sync';
 import { CsvRecord } from './types';
 import { RabbitMQClient } from '@foundation/queue/rabbitmq-client';
+import { LoginAccessTokenPayload } from '@task-management/modules/authentication/types/login-token-payload';
 
 @Controller('tickets')
 @UseGuards(AuthGuard)
@@ -32,8 +34,15 @@ export class TicketsController {
   ) {}
 
   @Post()
-  create(@Body() createTicketDto: CreateTicketDto) {
-    return this.ticketsService.create(createTicketDto);
+  create(
+    @Body() createTicketDto: CreateTicketDto,
+    @Request() req: { user: LoginAccessTokenPayload },
+  ) {
+    return this.ticketsService.create({
+      ...createTicketDto,
+      createdById: parseInt(req.user.sub, 10),
+      createdBy: req.user.username,
+    });
   }
 
   @Get()
@@ -58,7 +67,10 @@ export class TicketsController {
 
   @Post('import')
   @UseInterceptors(FileInterceptor('file'))
-  async importTickets(@UploadedFile() file: Express.Multer.File) {
+  async importTickets(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req: { user: LoginAccessTokenPayload },
+  ) {
     const records: CsvRecord[] = parse(file.buffer.toString('utf-8'), {
       columns: true,
       skip_empty_lines: true,
@@ -76,8 +88,8 @@ export class TicketsController {
       const message: CreateTicketDto = {
         title: record.Title,
         description: record.Description,
-        createdById: Number(record.CreatedById),
-        createdBy: record.CreatedBy,
+        createdById: parseInt(req.user.sub, 10),
+        createdBy: req.user.username,
         assigneeId: record.AssigneeId ? Number(record.AssigneeId) : undefined,
         status: record.Status,
         parentId: record.ParentId ? Number(record.ParentId) : undefined,
