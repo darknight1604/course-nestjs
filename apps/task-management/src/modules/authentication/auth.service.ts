@@ -130,6 +130,7 @@ export class AuthService {
       accessToken: accessToken,
       refreshToken: refreshToken,
       username: user.username,
+      roles: user.roles,
     };
   }
 
