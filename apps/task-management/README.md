@@ -11,10 +11,11 @@
 - Comment
 - Sprint
 - User
+- Team
 
 ### Commands
 
-- Start redis service
+- Start redis service(macOS)
 
 ```bash
 redis-server $(brew --prefix)/etc/redis.conf
