@@ -6,23 +6,37 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
+import { SearchTeamDto } from './dto/search-team.dto';
+import { LoginAccessTokenPayload } from '@task-management/modules/authentication/types/login-token-payload';
+import { AuthGuard } from '@task-management/modules/authentication/guards/auth.guard';
 
 @Controller('teams')
+@UseGuards(AuthGuard)
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
   @Post()
-  create(@Body() createTeamDto: CreateTeamDto) {
-    return this.teamsService.create(createTeamDto);
+  create(
+    @Body() createTeamDto: CreateTeamDto,
+    @Request() req: { user: LoginAccessTokenPayload },
+  ) {
+    return this.teamsService.create({
+      ...createTeamDto,
+      createdById: parseInt(req.user.sub, 10),
+      createdBy: req.user.username,
+    });
   }
 
   @Get()
-  findAll() {
-    return this.teamsService.findAll();
+  findAll(@Query() query: SearchTeamDto) {
+    return this.teamsService.search(query);
   }
 
   @Get(':id')
