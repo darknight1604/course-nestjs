@@ -51,14 +51,20 @@ export class UsersService extends BaseService<User> {
     return !!user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User | null> {
-    return await super.update(id, {
+  async updateUser(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserWithoutPassword | null> {
+    const newUser = await super.update(id, {
       ...updateUserDto,
       updatedDate: new Date(),
     });
+    return newUser ? this.toSafeUser(newUser) : null;
   }
 
-  async search(query: SearchUserDto): Promise<PaginationResult<User>> {
+  async search(
+    query: SearchUserDto,
+  ): Promise<PaginationResult<UserWithoutPassword>> {
     const { username, isActive, role, orderBy, orderDir, ...rest } = query;
     const orderOptions = buildOrderOptions({ orderBy, orderDir });
 
@@ -67,11 +73,13 @@ export class UsersService extends BaseService<User> {
     if (isActive !== undefined) where.isActive = isActive;
     if (role !== undefined) where.roles = `{${role}}`;
 
-    return await this.paginate({
+    const { data, ...paginations } = await this.paginate({
       ...rest,
       order: orderOptions,
       where: Object.keys(where).length > 0 ? where : undefined,
     });
+
+    return { data: data.map((user) => this.toSafeUser(user)), ...paginations };
   }
 
   async getUserById(id: string): Promise<UserWithoutPassword | null> {
@@ -84,13 +92,14 @@ export class UsersService extends BaseService<User> {
 
     const user = await this.findOne('id', +id);
     if (!user) return null;
+    const safeUser = this.toSafeUser(user);
+    await this.cachingDatabase.set<UserWithoutPassword>('user_' + id, safeUser);
+    return safeUser;
+  }
 
+  private toSafeUser(user: User): UserWithoutPassword {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userWithoutPassword } = user;
-    await this.cachingDatabase.set<UserWithoutPassword>(
-      'user_' + id,
-      userWithoutPassword,
-    );
-    return userWithoutPassword;
+    const { password, ...safeUser } = user;
+    return safeUser;
   }
 }

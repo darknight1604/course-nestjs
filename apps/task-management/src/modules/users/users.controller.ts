@@ -14,14 +14,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { UserRole } from '@task-management/constants';
+import { Roles } from '@task-management/modules/authentication/decorators/roles.decorator';
 import { AuthGuard } from '@task-management/modules/authentication/guards/auth.guard';
+import { RolesGuard } from '@task-management/modules/authentication/guards/roles.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SearchUserDto } from './dto/search-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { UserRole } from '@task-management/constants';
-import { Roles } from '@task-management/modules/authentication/decorators/roles.decorator';
-import { RolesGuard } from '@task-management/modules/authentication/guards/roles.guard';
 
 @Controller('users')
 @UseGuards(AuthGuard, RolesGuard)
@@ -64,7 +64,7 @@ export class UsersController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const updatedUser = await this.usersService.update(+id, updateUserDto);
+    const updatedUser = await this.usersService.updateUser(+id, updateUserDto);
     if (!updatedUser) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
