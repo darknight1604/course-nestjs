@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -28,7 +29,9 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid username or password');
     }
-
+    if (!user.isActive) {
+      throw new ForbiddenException('User account is inactive');
+    }
     const isMatch = await bcrypt.compare(loginDto.password, user?.password);
     if (!isMatch) {
       throw new UnauthorizedException('Invalid username or password');
