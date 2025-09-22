@@ -1,10 +1,14 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
+  InternalServerErrorException,
   Ip,
+  Logger,
   Post,
   Request,
   Res,
@@ -23,12 +27,16 @@ import { LoginAccessTokenPayload } from './types/login-token-payload';
 import type { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { LoginResponse } from './types/login-response';
+import { RegisterDto } from './dtos/register.dto';
+import { UsersService } from '@task-management/modules/users/users.service';
 
 @Controller('auth')
 export class AuthController implements CanHealthCheck {
+  private readonly logger = new Logger(AuthController.name);
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Get()
@@ -112,5 +120,24 @@ export class AuthController implements CanHealthCheck {
           604800), // 7 days
     });
     return rest;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('register')
+  async register(@Body() body: RegisterDto): Promise<void> {
+    try {
+      await this.usersService.create(body);
+    } catch (error) {
+      if (
+        error instanceof HttpException &&
+        (error.getStatus() as HttpStatus) === HttpStatus.CONFLICT
+      ) {
+        throw new ConflictException(error.message);
+      }
+      this.logger.error('Error register user:', error);
+      throw new InternalServerErrorException(
+        'An error occurred while register the user',
+      );
+    }
   }
 }
