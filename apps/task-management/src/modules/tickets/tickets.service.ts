@@ -6,7 +6,7 @@ import {
   buildDateRange,
   buildOrderOptions,
 } from '@task-management/core/utils/pagination-utils';
-import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { SearchTicketDto } from './dto/search-ticket.dto';
 import { Ticket } from './entities/ticket.entity';
 
@@ -37,7 +37,7 @@ export class TicketsService extends BaseService<Ticket> {
     const whereCondition:
       | FindOptionsWhere<Ticket>
       | FindOptionsWhere<Ticket>[] = {
-      ...(title && { title: Like(`%${title}%`) }),
+      ...(title && { title: ILike(`%${title}%`) }),
       ...(status && { status }),
       ...(assigneeId && { assigneeId }),
       ...(createdById && { createdById }),

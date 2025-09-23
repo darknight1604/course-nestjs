@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from '@task-management/core/base.service';
 import { PaginationResult } from '@task-management/core/types';
 import { buildOrderOptions } from '@task-management/core/utils/pagination-utils';
-import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { SearchTeamDto } from './dto/search-team.dto';
 import { Team } from './entities/team.entity';
 
@@ -25,7 +25,7 @@ export class TeamsService extends BaseService<Team> {
     } = query;
     const orderOptions = buildOrderOptions({ orderBy, orderDir });
     const whereCondition: FindOptionsWhere<Team> | FindOptionsWhere<Team>[] = {
-      ...(name && { name: Like(`%${name}%`) }),
+      ...(name && { name: ILike(`%${name}%`) }),
     };
 
     return await this.paginate({

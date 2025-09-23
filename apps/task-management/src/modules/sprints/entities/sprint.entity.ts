@@ -14,7 +14,7 @@ export class Sprint {
   @Column({ type: 'varchar', nullable: true })
   createdBy?: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   teamId: number;
 
   @Column({ type: 'timestamp', nullable: true })
