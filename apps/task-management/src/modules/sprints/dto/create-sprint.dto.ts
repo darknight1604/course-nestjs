@@ -7,6 +7,7 @@ export class CreateSprintDto {
   createdById: number;
   createdBy?: string;
   teamId: number;
+  teamName?: string;
   startDate?: Date;
   endDate?: Date;
 }
